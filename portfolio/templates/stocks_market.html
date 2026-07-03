@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div style="max-width: 1400px; margin: 0 auto; padding: 20px;">
+
+<h1 style="color: #007bff; margin-bottom: 30px;">📊 Stock Market Explorer</h1>
+
+<!-- Search Bar -->
+<div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <form method="GET" style="display: flex; gap: 10px;">
+        <input type="text" name="search" placeholder="Search stock symbol (e.g., AAPL, GOOGL, TSLA)..." value="{{ search_query }}" style="flex: 1; padding: 12px; border: 2px solid #007bff; border-radius: 6px; font-size: 16px;">
+        <button type="submit" style="padding: 12px 30px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold;">
+            🔍 Search
+        </button>
+    </form>
+</div>
+
+<!-- Stock Listings -->
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 20px;">
+    {% for stock in stocks %}
+    <a href="{% url 'stock_detail' stock.symbol %}" style="text-decoration: none;">
+        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'">
+            
+            <!-- Stock Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <div>
+                    <h3 style="margin: 0; color: #007bff; font-size: 24px;">{{ stock.symbol }}</h3>
+                    <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">{{ stock.name }}</p>
+                </div>
+                <div style="background: {% if stock.status == 'up' %}#d4edda{% else %}#f8d7da{% endif %}; padding: 8px 12px; border-radius: 6px; text-align: right;">
+                    <p style="margin: 0; color: {% if stock.status == 'up' %}#28a745{% else %}#dc3545{% endif %}; font-weight: bold;">
+                        {% if stock.status == 'up' %}
+                        ▲ +{{ stock.changePercent }}%
+                        {% else %}
+                        ▼ {{ stock.changePercent }}%
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Price Section -->
+            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <p style="margin: 0; color: #666; font-size: 12px;">Current Price</p>
+                <h2 style="margin: 5px 0 0 0; color: #007bff; font-size: 32px;">${{ stock.price }}</h2>
+                <p style="margin: 5px 0 0 0; color: {% if stock.status == 'up' %}#28a745{% else %}#dc3545{% endif %};">
+                    {{ stock.change }}
+                </p>
+            </div>
+
+            <!-- Stock Info Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12px;">
+                <div>
+                    <p style="margin: 0; color: #999;">52W High</p>
+                    <p style="margin: 3px 0 0 0; color: #333; font-weight: bold;">${{ stock.high52 }}</p>
+                </div>
+                <div>
+                    <p style="margin: 0; color: #999;">52W Low</p>
+                    <p style="margin: 3px 0 0 0; color: #333; font-weight: bold;">${{ stock.low52 }}</p>
+                </div>
+                <div>
+                    <p style="margin: 0; color: #999;">P/E Ratio</p>
+                    <p style="margin: 3px 0 0 0; color: #333; font-weight: bold;">{{ stock.pe }}</p>
+                </div>
+                <div>
+                    <p style="margin: 0; color: #999;">Sector</p>
+                    <p style="margin: 3px 0 0 0; color: #333; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ stock.sector }}</p>
+                </div>
+            </div>
+
+            <!-- View Button -->
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #f0f0f0;">
+                <button style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                    📊 View Details & Charts
+                </button>
+            </div>
+
+        </div>
+    </a>
+    {% empty %}
+    <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+        <h2 style="color: #999;">📌 Stock not found</h2>
+        <p style="color: #999;">Try searching for a different stock symbol (e.g., AAPL, GOOGL, MSFT)</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Popular Stocks Info -->
+{% if not search_query %}
+<div style="background: #f0f8ff; padding: 30px; border-radius: 12px; margin-top: 40px; text-align: center;">
+    <h3 style="color: #007bff;">💡 Tip</h3>
+    <p style="color: #666; margin: 10px 0 0 0;">Showing popular stocks. Search for any stock symbol to get real-time data and charts!</p>
+</div>
+{% endif %}
+
+</div>
+
+{% endblock %}

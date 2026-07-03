@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Market Live</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+        nav {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        nav h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            align-items: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        nav a.active {
+            background: rgba(255, 255, 255, 0.3);
+            font-weight: bold;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h1>📈 Stock Market Live</h1>
+    <ul>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'portfolio' %}" class="{% if request.resolver_match.url_name == 'portfolio' %}active{% endif %}">💼 My Portfolio</a></li>
+        <li><a href="{% url 'stocks_market' %}" class="{% if request.resolver_match.url_name == 'stocks_market' %}active{% endif %}">📊 Market</a></li>
+        {% endif %}
+    </ul>
+    <div class="user-info">
+        {% if user.is_authenticated %}
+        <span>Welcome, <b>{{ user.username }}</b></span>
+        <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+        <a href="/login/">Login</a>
+        {% endif %}
+    </div>
+</nav>
+
+<div style="min-height: 80vh;">
+    {% block content %}
+    {% endblock %}
+</div>
+
+<footer style="background: #333; color: white; text-align: center; padding: 20px; margin-top: 30px;">
+    <p>&copy; 2026 Stock Market Live. Real-time stock data powered by Yahoo Finance.</p>
+</footer>
+
+</body>
+</html>

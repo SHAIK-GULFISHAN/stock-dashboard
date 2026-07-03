@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+<h1>📈 Stock Market Dashboard</h1>
+
+
+<form method="POST">
+{% csrf_token %}
+
+<input 
+class="form-control"
+name="symbol"
+placeholder="Enter Stock (AAPL, TSLA)"
+>
+
+<button class="btn btn-primary mt-3">
+Search
+</button>
+
+</form>
+
+
+
+{% if stock %}
+
+<div class="card mt-4 p-4">
+
+<h2>{{stock.symbol}}</h2>
+
+<h3>
+Price : ${{stock.price}}
+</h3>
+
+<p>
+Change : {{stock.change}} %
+</p>
+
+</div>
+
+
+<h3 class="mt-5">
+Price History (1 Month)
+</h3>
+
+
+<canvas id="chart"></canvas>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+const labels = [
+{% for x,y in chart_data %}
+"{{x}}",
+{% endfor %}
+];
+
+
+const prices = [
+{% for x,y in chart_data %}
+{{y}},
+{% endfor %}
+];
+
+
+new Chart(
+document.getElementById('chart'),
+{
+type:'line',
+
+data:{
+labels:labels,
+
+datasets:[{
+label:'Price',
+data:prices
+}]
+}
+
+}
+
+);
+
+</script>
+
+
+{% endif %}
+
+
+
+{% if error %}
+
+<p class="text-danger">
+{{error}}
+</p>
+
+{% endif %}
+
+
+
+</div>
+
+
+{% endblock %}
