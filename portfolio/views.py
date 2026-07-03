@@ -126,11 +126,14 @@ def portfolio(request):
         'quantities': json.dumps(quantities),
         'current_values': json.dumps(current_values),
     }
+
+    holdings_json = json.dumps(holdings_with_prices)
     
     total_gain_loss_percent = (total_gain_loss / total_invested * 100) if total_invested > 0 else 0
 
     return render(request, "portfolio.html", {
         "holdings": holdings_with_prices,
+        "holdings_json": holdings_json,
         "chart_data": chart_data,
         "total_invested": round(total_invested, 2),
         "total_current_value": round(total_current_value, 2),

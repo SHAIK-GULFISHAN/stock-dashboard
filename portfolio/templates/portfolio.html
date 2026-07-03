@@ -172,9 +172,10 @@
     const symbols = {{ chart_data.symbols|safe }};
     const quantities = {{ chart_data.quantities|safe }};
     const currentValues = {{ chart_data.current_values|safe }};
-    
-    // Calculate gain/loss and returns for each stock
-    const holdings = {{ holdings|safe|escapejs }};
+
+    // Fixed: use pre-serialized JSON from views.py instead of |escapejs
+    const holdings = {{ holdings_json|safe }};
+
     const gainLosses = holdings.map(h => parseFloat(h.gain_loss));
     const returns = holdings.map(h => parseFloat(h.gain_loss_percent));
 
